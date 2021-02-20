@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: knote
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: note
+  template:
+    metadata: 
+      labels:
+        app: note
+    spec:
+      containers:
+        - image: abspore/knote-java:1.1.0
+          name: knote
+          ports:
+           - containerPort: 8080
+          env:
+           - name: MONGO_URL
+             value: mongodb://mongodb:27017/dev 
+          imagePullPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: knote
+spec:
+  selector:
+    app: note
+  type: LoadBalancer
+  ports:
+    - port: 80
+      targetPort: 8080
